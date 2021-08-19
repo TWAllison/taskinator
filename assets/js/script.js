@@ -7,7 +7,7 @@ var createTaskHandler = function() {
      listItemEl.className = "task-item";
     listItemEl.textContent = "This is a new task.";
     //.appendChild === +=
-    tasksToDoEl+=(listItemEl);
+    tasksToDoEl.appendChild(listItemEl);
 };
 
 buttonEl.addEventListener("click", createTaskHandler);
