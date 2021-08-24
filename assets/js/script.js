@@ -53,7 +53,7 @@ var createTaskEl = function(taskDataObj) {
     tasks.push(taskDataObj);
 
     taskIdCounter++; //increase taskcounter for next unique id
-    
+
     saveTasks();
 };
 
@@ -180,6 +180,18 @@ var taskStatusChangeHandler = function(event) {
 var saveTasks = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+
+var loadTasks = function() {
+    var savedTasks = localStorage.getItem("tasks");  //get tasks from local storage
+    if (!savedTasks) { // also could use (savedTasks === null)
+        return false;
+    }
+    savedTasks = JSON.parse(savedTasks);  //convert tasks from string format back to array of objects
+    
+    for (var i = 0; i < savedTasks.length; i++) {
+        createTaskEl(savedTasks[i]);
+    }
+};
 
 formEl.addEventListener("submit", taskFormHandler);
 pageContentEl.addEventListener("click", taskButtonHandler);
