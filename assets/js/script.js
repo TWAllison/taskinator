@@ -5,7 +5,7 @@ var pageContentEl = document.querySelector("#page-content");
 var tasksInProgressEl = document.querySelector("#tasks-in-progress");
 var tasksCompletedEl = document.querySelector("#tasks-completed");
 
-var tasks = [];
+var tasks = []; // create an array to hold tasks for saving 
 
 var taskFormHandler = function(event) {
     event.preventDefault();
@@ -49,6 +49,23 @@ var createTaskEl = function(taskDataObj) {
     listItemEl.appendChild(taskActionsEl); // append taskActionEl to listItemEl before ListItemEl is appended to page 
     tasksToDoEl.appendChild(listItemEl);  //add the entire list item to the list
 
+    switch (taskDataObj.status) {
+    case "to do":
+      taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 0;
+      tasksToDoEl.append(listItemEl);
+      break;
+    case "in progress":
+      taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 1;
+      tasksInProgressEl.append(listItemEl);
+      break;
+    case "completed":
+      taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 2;
+      tasksCompletedEl.append(listItemEl);
+      break;
+    default:
+      console.log("Something went wrong!");
+  }
+
     taskDataObj.id = taskIdCounter;
     tasks.push(taskDataObj);
 
@@ -79,11 +96,11 @@ var createTaskActions = function(taskId) {
     statusSelectEl.className = "select-status";
     actionsContainerEl.appendChild(statusSelectEl);
 
-    var statusChoices = ["To DO", "In Progress", "completed"]; // create status options
+    var statusChoices = ["To DO", "In Progress", "Completed"]; // create status options
 
     for (var i = 0; i < statusChoices.length; i++) {
 
-        var statusOptionEl = document.createElement("options"); // create the option El
+        var statusOptionEl = document.createElement("option"); // create the option El
         statusOptionEl.setAttribute("value", statusChoices[i]);
         statusOptionEl.textContent = statusChoices[i];
 
@@ -158,8 +175,9 @@ var deleteTask = function(taskId) {
 var taskStatusChangeHandler = function(event) {
 
     var taskId = event.target.getAttribute("data-task-id"); // get the task item's Id
+    var statusValue = event.target.value.toLowerCase();  // get the currently selected options value and convert to lowercase
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']"); // find the parent task item element based on the Id
-    var statusValue = event.target.value.toLowerCase(); // get the currently selected options value and convert to lowercase
+    
     if (statusValue === "to do") {
         tasksToDoEl.appendChild(taskSelected);
     }
@@ -188,7 +206,7 @@ var loadTasks = function() {
     }
     savedTasks = JSON.parse(savedTasks);  //convert tasks from string format back to array of objects
     
-    for (var i = 0; i < savedTasks.length; i++) {
+    for (var i = 0; i < savedTasks.length; i++) { // pass each object into the createTaskEl() function
         createTaskEl(savedTasks[i]);
     }
 };
